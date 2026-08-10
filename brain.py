@@ -67,7 +67,7 @@ tools = [
                 "required": ["text"]
             }
         }
-    }
+    },
     {
         "type": "function",
         "function": {

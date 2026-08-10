@@ -19,7 +19,7 @@ def send_whatsapp_desktop(name, message):
 
     # Step 3: Open WhatsApp
     pyautogui.press('enter')
-    time.sleep(5)  # wait for app to open
+    time.sleep(2)  # wait for app to open
 
     # Step 4: Click Search Box
     pyautogui.click(SEARCH_BOX)
@@ -31,11 +31,11 @@ def send_whatsapp_desktop(name, message):
 
     # Step 6: Type Name
     pyautogui.write(name, interval=0.05)
-    time.sleep(2)
+    time.sleep(1)
 
     # Step 7: Open Chat
     pyautogui.press('enter')
-    time.sleep(2)
+    time.sleep(1)
 
     # Step 8: Paste Message (better than typing)
     pyperclip.copy(message)
@@ -55,5 +55,5 @@ def send_whatsapp_desktop(name, message):
 
 # -------- TEST --------
 if __name__ == "__main__":
-    send_whatsapp_desktop("arnav singh", "Hello from Jarvis 🚀")
+    send_whatsapp_desktop("arnav singh", "Hello from MJ ")
 

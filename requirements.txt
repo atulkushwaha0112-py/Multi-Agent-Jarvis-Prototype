@@ -1,17 +1,37 @@
+# Core LLM / Agent
 mistralai
+langgraph
+langchain-core
+langchain-mistralai
+
+# Google / Gmail
 python-dotenv
 google-auth
 google-auth-oauthlib
 google-api-python-client
+
+# Vector memory
 qdrant-client
 sentence-transformers
+
+# WhatsApp desktop automation
 pyautogui
 pyperclip
+
+# Image / Vision (for check_new_msg_status)
 pytesseract
 pillow
 opencv-python
+
+# Audio / TTS (Rime)
 websockets
 pyaudio
-playwright
+
+# Speech recognition
 SpeechRecognition
-pyttsx3
+
+# Music playback
+yt-dlp
+
+# HTTP
+requests

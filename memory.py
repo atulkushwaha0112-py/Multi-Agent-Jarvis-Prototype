@@ -35,9 +35,9 @@ def setup_collection():
             collection_name=COLLECTION_NAME,
             vectors_config=VectorParams(size=384, distance=Distance.COSINE)
         )
-        print(f"Collection '{COLLECTION_NAME}' ban gayi ✅")
+        print(f"Collection '{COLLECTION_NAME}' ")
     else:
-        print(f"Collection '{COLLECTION_NAME}' pehle se hai ✅")
+        print(f"Collection '{COLLECTION_NAME}' ")
 
 
 def reset_collection():
@@ -122,9 +122,9 @@ def setup_email_collection():
             collection_name=EMAIL_COLLECTION_NAME,
             vectors_config=VectorParams(size=384, distance=Distance.COSINE)
         )
-        print(f"Collection '{EMAIL_COLLECTION_NAME}' ban gayi ✅")
+        print(f"Collection '{EMAIL_COLLECTION_NAME}' ")
     else:
-        print(f"Collection '{EMAIL_COLLECTION_NAME}' pehle se hai ✅")
+        print(f"Collection '{EMAIL_COLLECTION_NAME}' ")
 
 
 def index_email(email):

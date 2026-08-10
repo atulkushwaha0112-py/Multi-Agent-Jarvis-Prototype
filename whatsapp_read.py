@@ -30,7 +30,7 @@ def open_whatsapp():
     time.sleep(1)
 
     pyautogui.press('enter')
-    time.sleep(5)
+    time.sleep(2)
 
 
 def open_chat(name):
@@ -41,10 +41,10 @@ def open_chat(name):
     pyautogui.press('backspace')
 
     pyautogui.write(name, interval=0.05)
-    time.sleep(2)
+    time.sleep(1)
 
     pyautogui.press('enter')
-    time.sleep(3)
+    time.sleep(1)
 
 
 def select_messages():
@@ -93,9 +93,7 @@ def get_whatsapp_messages(name):
     return messages
 
 
-# ==============================
-# RUN
-# ==============================
+# For Manula Checkup RUN
 
 if __name__ == "__main__":
     contact_name = "Shivam pandey"   # CHANGE THIS
