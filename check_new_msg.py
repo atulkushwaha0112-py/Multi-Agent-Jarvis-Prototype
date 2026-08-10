@@ -1,3 +1,89 @@
+import pyautogui
+import time
+import requests
+import base64
+import io
+import os
+from dotenv import load_dotenv
+
+# ==============================
+# LOAD ENV
+# ==============================
+
+load_dotenv()
+
+OLLAMA_API_URL = os.getenv("OLLAMA_API_URL")
+
+# Load multiple API keys
+API_KEYS = [
+    os.getenv("API_KEY_OLLAMA"),
+]
+
+MODEL = "gemma4:cloud"
+
+SEARCH_BOX = (284, 126)
+UNREAD_BUTTON_POS = (172, 170)
+ALL_BUTTON_POS = (105, 166)  # same button toggles back to "All" — update if different
+
+CHAT_LIST_REGION = (67, 193, 575, 648)
+
+
+# ==============================
+# FUNCTIONS
+# ==============================
+
+def open_whatsapp():
+    print("[INFO] Opening WhatsApp...")
+    pyautogui.press('win')
+    time.sleep(1)
+    pyautogui.write('WhatsApp')
+    time.sleep(1)
+    pyautogui.press('enter')
+    time.sleep(5)
+
+
+def click_unread_filter():
+    print("[INFO] Clicking 'Unread' filter...")
+    pyautogui.click(UNREAD_BUTTON_POS)
+    time.sleep(2)
+
+
+def clear_search():
+    print("[INFO] Clearing search box...")
+    pyautogui.click(SEARCH_BOX)
+    time.sleep(1)
+    pyautogui.hotkey("ctrl", "a")
+    time.sleep(0.5)
+    pyautogui.press("backspace")
+    time.sleep(1)
+
+
+def capture_image_base64():
+    print("[INFO] Capturing chat list...")
+    img = pyautogui.screenshot(region=CHAT_LIST_REGION)
+
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+
+def click_all_filter():
+    print("[INFO] Clicking 'All chats'...")
+    pyautogui.click(ALL_BUTTON_POS)
+    time.sleep(2)
+
+
+def close_whatsapp():
+    print("[INFO] Closing WhatsApp...")
+    pyautogui.hotkey("alt", "f4")
+
+
+def analyze_with_gemma(base64_image):
+    print("[INFO] Sending to Gemma (with key rotation)...")
+
+    prompt = """
+    This is a WhatsApp chat list filtered to unread chats.
 
     Extract ONLY the names of people or groups that have unread messages.
 

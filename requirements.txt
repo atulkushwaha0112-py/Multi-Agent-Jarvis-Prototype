@@ -1,0 +1,7 @@
+pyautogui
+pyperclip
+pytesseract
+pillow
+opencv-python
+websockets
+pyaudio
