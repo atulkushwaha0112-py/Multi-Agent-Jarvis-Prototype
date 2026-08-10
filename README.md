@@ -1,327 +1,288 @@
-JARVIS — Voice-First Multi-Agent Personal Assistant
+<div align="center">
 
-A voice-first personal assistant designed to autonomously execute real-world tasks through natural speech and respond entirely through voice — zero typing, zero screens, zero physical interference.
+# 🤖 JARVIS
+### Voice-First Multi-Agent Personal Assistant
 
-About JARVIS
+*Speak your intent. JARVIS understands. JARVIS acts.*
 
-JARVIS is an AI-powered, voice-first personal assistant designed to make human-computer interaction more natural and action-oriented.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Agent%20Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com/langgraph)
+[![LangChain](https://img.shields.io/badge/LangChain-Tool%20Integration-1C3C3C?style=flat-square)](https://www.langchain.com/)
+[![Mistral AI](https://img.shields.io/badge/Mistral%20AI-mistral--small--latest-FF7000?style=flat-square)](https://mistral.ai/)
+[![License](https://img.shields.io/badge/License-Unspecified-lightgrey?style=flat-square)]()
 
-Instead of requiring users to type commands, navigate applications, or manually perform repetitive tasks, JARVIS provides a conversational interface where the user can simply speak a request.
+**A voice-first personal assistant that autonomously executes real-world tasks through natural speech. Zero typing, zero screens, zero physical interference.**
 
-The system listens to the user's voice, converts speech into text, understands the intent using an LLM-powered agent, decides whether a tool needs to be executed, performs the required action, and finally converts the response back into speech.
+</div>
 
-The intended interaction model is:
+---
 
-        Human
-          │
-          │ Natural Speech
-          ▼
-     ┌───────────┐
-     │    JARVIS │
-     └─────┬─────┘
-           │
-           ▼
-     Understand Intent
-           │
-           ▼
-      Decide Action
-           │
-           ▼
-      Execute Tool
-           │
-           ▼
-       Get Result
-           │
-           ▼
-     Generate Response
-           │
-           ▼
-       Voice Output
-           │
-           ▼
-        Human
+## 📖 Table of Contents
 
-The goal is to move from "computer as a tool I operate" toward "computer as an assistant I communicate with."
+- [About JARVIS](#-about-jarvis)
+- [What Makes JARVIS Different?](#-what-makes-jarvis-different)
+- [Core Features](#-core-features)
+- [System Architecture](#️-system-architecture)
+- [End-to-End Execution Flow](#-end-to-end-execution-flow)
+- [LangGraph Workflow](#-langgraph-workflow)
+- [Confirmation Architecture](#-confirmation-architecture)
+- [Persistent State](#-persistent-state)
+- [Continuous Voice Loop & Shutdown](#️-continuous-voice-loop)
+- [Error Handling](#️-error-handling)
+- [Project Structure](#-project-structure)
+- [File Responsibilities](#-file-responsibilities)
+- [Environment Configuration](#-environment-configuration)
+- [Installation](#️-installation)
+- [Running JARVIS](#️-running-jarvis)
+- [Example Interactions](#-example-interactions)
+- [Planned Frontend](#-planned-frontend)
+- [Future Roadmap](#-future-roadmap)
+- [Multi-Agent Architecture: Future Direction](#-multi-agent-architecture--future-direction)
+- [Design Principles](#️-design-principles)
+- [Security Considerations](#-security-considerations)
+- [Technology Stack](#-current-technology-stack)
+- [Technical Summary](#-technical-summary)
+- [Vision](#-vision)
 
-🚀 What Makes JARVIS Different?
+---
 
-Traditional software interaction generally looks like:
+## 💡 About JARVIS
 
-Think → Type → Search → Click → Navigate → Execute
+**JARVIS** is an AI-powered, voice-first personal assistant designed to make human-computer interaction more natural and action-oriented.
 
-JARVIS aims for:
+Instead of requiring users to type commands, navigate applications, or manually perform repetitive tasks, JARVIS provides a conversational interface where the user simply **speaks a request**.
 
-Think → Speak → Done
+The system:
 
-For example, instead of manually opening a messaging application and composing a message, the user can say:
+1. **Listens** to the user's voice
+2. **Transcribes** speech into text
+3. **Understands intent** using an LLM-powered agent
+4. **Decides** whether a tool needs to be executed
+5. **Performs** the required action
+6. **Responds** back entirely through voice
 
-"Send Rahul a message saying I'll reach in ten minutes."
+### Interaction Model
 
-JARVIS can understand the request, determine that a messaging action is required, ask for confirmation when necessary, and then execute the corresponding tool.
+```
+                Human
+                  │
+                  │ Natural Speech
+                  ▼
+            ┌───────────┐
+            │  JARVIS   │
+            └─────┬─────┘
+                  │
+                  ▼
+           Understand Intent
+                  │
+                  ▼
+             Decide Action
+                  │
+                  ▼
+             Execute Tool
+                  │
+                  ▼
+               Get Result
+                  │
+                  ▼
+           Generate Response
+                  │
+                  ▼
+              Voice Output
+                  │
+                  ▼
+                Human
+```
 
-The same architecture can be extended to other real-world actions such as email, music, productivity, memory, and additional automation tools.
+> **The goal:** move from *"computer as a tool I operate"* toward *"computer as an assistant I communicate with."*
 
-✨ Core Features
-🎙️ Voice-First Interaction
+---
 
-JARVIS is designed around continuous voice interaction.
+## 🚀 What Makes JARVIS Different?
 
-The user does not need to type commands into a terminal or application.
+| Traditional Software | JARVIS |
+|---|---|
+| Think → Type → Search → Click → Navigate → Execute | Think → Speak → Done |
 
-Microphone
-    ↓
-Speech-to-Text
-    ↓
-JARVIS
-    ↓
-Text-to-Speech
-    ↓
-Speaker
-🧠 LLM-Powered Reasoning
+For example, instead of manually opening a messaging app and composing a message, the user simply says:
 
-JARVIS uses Mistral AI through ChatMistralAI to understand natural-language requests.
+> 🗣️ *"Send Rahul a message saying I'll reach in ten minutes."*
 
-The current model configured in the project is:
+JARVIS understands the request, determines a messaging action is required, asks for confirmation when necessary, and executes the corresponding tool.
 
-mistral-small-latest
+This same architecture extends naturally to email, music, productivity, memory, and future automation tools.
 
-The model is also provided with access to the project's tools.
+---
 
-🛠️ Tool-Based Task Execution
+## ✨ Core Features
 
-JARVIS is not limited to generating text.
+### 🎙️ Voice-First Interaction
 
-The LLM can decide when an available tool needs to be executed.
+JARVIS is built around continuous voice interaction, with no typing required.
 
-Tools are registered through:
+```
+Microphone → Speech-to-Text → JARVIS → Text-to-Speech → Speaker
+```
 
-ALL_TOOLS
+### 🧠 LLM-Powered Reasoning
 
-and exposed to the model using:
+JARVIS uses **Mistral AI** via `ChatMistralAI` to understand natural-language requests.
 
+- **Current model:** `mistral-small-latest`
+- The model has direct access to the project's registered tools
+
+### 🛠️ Tool-Based Task Execution
+
+JARVIS isn't limited to generating text. The LLM decides *when* a tool needs to run.
+
+```python
 llm.bind_tools(ALL_TOOLS)
+```
 
-The LangGraph ToolNode is then responsible for executing the requested tool.
+A LangGraph `ToolNode` then executes the requested tool, creating a clean separation of concerns:
 
-This creates the fundamental separation:
+```
+        LLM
+         │
+         │  decides what needs to happen
+         ▼
+        Tool
+         │
+         │  actually performs the action
+         ▼
+       Result
+```
 
-LLM
- │
- │ decides what needs to happen
- ▼
-Tool
- │
- │ actually performs the action
- ▼
-Result
-🔊 Voice Responses
+### 🔊 Voice Responses
 
-JARVIS does not simply print responses to the terminal.
+Responses are never just printed to a terminal. Every final reply is routed through:
 
-The final response is passed to:
-
+```python
 speak(reply)
+```
 
-which handles Text-to-Speech.
+### ⚡ Fast-Path Commands
 
-Therefore, the intended interaction is completely voice-oriented.
+Not every command needs a full LLM round trip. JARVIS implements a dedicated **fast path** for stopping music, bypassing the LLM entirely for deterministic phrases:
 
-⚡ Fast-Path Commands
+`stop` · `stop music` · `stop the music` · `stop playing` · `pause` · `pause music` · `quiet` · `silence` · `mute`
 
-Not every command needs an LLM round trip.
+These route straight to `stop_music()`, reducing latency and unnecessary API usage.
 
-JARVIS currently implements a dedicated fast path for stopping music.
+### 🔐 Confirmation for Sensitive Actions
 
-Commands such as:
+Certain potentially irreversible actions require explicit user confirmation before execution:
 
-stop
-stop music
-stop the music
-stop playing
-pause
-pause music
-quiet
-silence
-mute
+```
+User:    Send Rahul a WhatsApp message saying I'll call later.
+JARVIS:  Send it?
+User:    Yes.
+JARVIS:  Message sent.
+```
 
-are handled directly through:
+Confirmation is required before: `send_whatsapp_tool`, `send_email_tool`. Read-only and other specified actions execute immediately.
 
-stop_music()
+---
 
-instead of being sent to the LLM.
+## 🏗️ System Architecture
 
-This reduces unnecessary latency and API usage for deterministic commands.
+```
+┌────────────────────────────────────────────────┐
+│                     USER                        │
+│                 Natural Speech                  │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+┌────────────────────────────────────────────────┐
+│               VOICE INPUT LAYER                 │
+│           listen_and_transcribe()                │
+│                Speech → Text                     │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+┌────────────────────────────────────────────────┐
+│               APPLICATION LAYER                  │
+│                    main.py                       │
+│  • Continuous voice loop                          │
+│  • Fast-path commands                              │
+│  • State management                                │
+│  • Graph invocation                                 │
+│  • Response extraction                              │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+┌────────────────────────────────────────────────┐
+│                  AGENT LAYER                     │
+│                   graph.py                        │
+│               LangGraph StateGraph                │
+│                                                    │
+│    START → Agent → Tool required?                  │
+│                        ├── No  → END                │
+│                        └── Yes → Tools → Agent → END │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+┌────────────────────────────────────────────────┐
+│                   TOOL LAYER                     │
+│                   ALL_TOOLS                       │
+│      External actions / integrations / automation │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+┌────────────────────────────────────────────────┐
+│               VOICE OUTPUT LAYER                 │
+│                    speak()                        │
+│                Text → Speech                       │
+└───────────────────────┬──────────────────────────┘
+                         ▼
+                      🔊 User
+```
 
-🔐 Confirmation for Sensitive Actions
+---
 
-JARVIS is configured to require confirmation before certain potentially irreversible actions.
+## 🔄 End-to-End Execution Flow
 
-For example:
+### Step 1: Listen
+`main.py` calls `listen_and_transcribe()`, converting microphone input into text.
 
-User:
-Send Rahul a WhatsApp message saying I'll call later.
+> User says: *"Send an email to John."*
+> App receives: `"Send an email to John."`
 
-JARVIS:
-Send it?
+### Step 2: Check Fast-Path Commands
 
-User:
-Yes.
+Before invoking the LLM, `main.py` checks whether the command matches a predefined music-stop trigger:
 
-JARVIS:
-Message sent.
-
-The system prompt specifically requires confirmation before:
-
-send_whatsapp_tool
-send_email_tool
-
-while read-only and other specified actions do not require confirmation.
-
-🏗️ System Architecture
-
-The current implementation can be divided into several conceptual layers:
-
-┌───────────────────────────────────────────────┐
-│                  USER                        │
-│              Natural Speech                  │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────────┐
-│              VOICE INPUT LAYER                │
-│       listen_and_transcribe()                 │
-│                                               │
-│          Speech → Text                        │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────────┐
-│              APPLICATION LAYER                │
-│                  main.py                      │
-│                                               │
-│  • Continuous voice loop                      │
-│  • Fast-path commands                         │
-│  • State management                            │
-│  • Graph invocation                            │
-│  • Response extraction                         │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────────┐
-│               AGENT LAYER                     │
-│                  graph.py                     │
-│                                               │
-│          LangGraph StateGraph                 │
-│                                               │
-│              START                            │
-│                ↓                              │
-│              Agent                            │
-│                ↓                              │
-│        Tool required?                         │
-│          ↙        ↘                           │
-│        No          Yes                        │
-│        ↓            ↓                         │
-│       END         Tools                       │
-│                     ↓                         │
-│                   Agent                       │
-│                     ↓                         │
-│                    END                        │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────────┐
-│                TOOL LAYER                     │
-│                  ALL_TOOLS                    │
-│                                               │
-│  External actions / integrations / automation │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────────┐
-│              VOICE OUTPUT LAYER               │
-│                    speak()                    │
-│                                               │
-│             Text → Speech                     │
-└──────────────────────┬────────────────────────┘
-                       │
-                       ▼
-                    🔊 User
-🔄 End-to-End Execution Flow
-
-Every normal interaction follows this sequence.
-
-Step 1 — Listen
-
-main.py calls:
-
-listen_and_transcribe()
-
-The microphone input is converted into text.
-
-Example:
-
-User says:
-
-"Send an email to John."
-
-The application receives:
-
-"Send an email to John."
-Step 2 — Check Fast-Path Commands
-
-Before invoking the LLM, main.py checks whether the command matches one of the predefined music-stop triggers.
-
+```python
 if user_text.strip().lower() in STOP_MUSIC_TRIGGERS:
     status = stop_music()
+```
 
-This means:
+This means `"stop music"` skips the LLM entirely:
 
-"stop music"
+```
+Speech → STT → Fast-path → stop_music() → TTS
+```
 
-does not need to travel through:
+### Step 3: Add User Message to State
 
-Speech → LLM → Tool → Response
+For normal requests, the message is appended to persistent conversation state:
 
-Instead:
-
-Speech
-  ↓
-STT
-  ↓
-Fast-path
-  ↓
-stop_music()
-  ↓
-TTS
-Step 3 — Add User Message to State
-
-For normal requests, the user's message is added to the persistent conversation state:
-
+```python
 state["messages"] = state["messages"] + [
     HumanMessage(content=user_text)
 ]
+```
 
-This allows the graph to receive the conversation history.
+### Step 4: Invoke LangGraph
 
-Step 4 — Invoke LangGraph
-
-The state is passed to the compiled LangGraph application:
-
+```python
 result = app.invoke(state)
+```
 
-The graph is created in graph.py.
+The compiled graph (defined in `graph.py`) handles reasoning and execution.
 
-🧠 LangGraph Workflow
+---
 
-The graph is a StateGraph built around AgentState.
+## 🧠 LangGraph Workflow
 
-The current graph consists of two actual nodes:
+The graph is a `StateGraph` built around `AgentState`, consisting of two nodes: `agent` and `tools`.
 
-agent
-tools
-
-with the following workflow:
-
+```
                  START
                    │
                    ▼
@@ -330,179 +291,139 @@ with the following workflow:
               └────┬────┘
                    │
                    ▼
-          tools_condition
-             /          \
-            /            \
-       No tool          Tool call
-          │                 │
-          ▼                 ▼
-         END             ┌───────┐
-                         │ tools │
-                         └───┬───┘
-                             │
-                             ▼
-                           agent
-                             │
-                             ▼
-                            END
+           tools_condition
+             /            \
+        No tool          Tool call
+           │                 │
+           ▼                 ▼
+          END             ┌───────┐
+                           │ tools │
+                           └───┬───┘
+                               │
+                               ▼
+                             agent
+                               │
+                               ▼
+                              END
+```
 
-The conditional routing is handled through:
-
+```python
 graph_builder.add_conditional_edges(
     "agent",
     tools_condition
 )
-🤖 Agent Node
+```
 
-The agent node is responsible for calling the LLM.
+### 🤖 Agent Node
 
-The system prompt is prepended to the existing conversation:
+Responsible for calling the LLM. The system prompt is prepended to the conversation:
 
+```python
 system_msg = SystemMessage(content=SYSTEM_PROMPT)
+messages_with_system = [system_msg] + list(state["messages"])
+```
 
-messages_with_system = [
-    system_msg
-] + list(state["messages"])
-
-The model then receives the conversation and available tools.
-
-The configured model is:
-
+```python
 ChatMistralAI(
     model="mistral-small-latest",
     ...
 )
-🧰 Tool Binding
+```
 
-The tools are imported from:
+### 🧰 Tool Binding
 
+Tools are imported once and used at **two levels**:
+
+```python
 from tools import ALL_TOOLS
 
-They are bound to the LLM:
+llm_with_tools = llm.bind_tools(ALL_TOOLS)   # LLM can request a tool
+tool_node = ToolNode(ALL_TOOLS)              # LangGraph executes it
+```
 
-llm_with_tools = llm.bind_tools(ALL_TOOLS)
-
-and registered with LangGraph:
-
-tool_node = ToolNode(ALL_TOOLS)
-
-This means the same tool collection is used at two levels:
-
+```
                 ALL_TOOLS
-                  │
-          ┌───────┴────────┐
-          ▼                ▼
-      LLM Binding       ToolNode
-          │                │
-          ▼                ▼
-    Model can request   LangGraph
-       a tool           executes it
-🔁 Agent → Tool → Agent Loop
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
+      LLM Binding           ToolNode
+          │                   │
+          ▼                   ▼
+  Model requests a tool   LangGraph executes it
+```
 
-If the model decides that a tool is required, LangGraph routes execution to the tools node.
+### 🔁 Agent → Tool → Agent Loop
 
-After the tool finishes, execution returns to the agent node.
+```
+User Request → Agent → Tool Call → Tool Execution → Tool Result → Agent → Final Response
+```
 
-This allows JARVIS to follow a loop such as:
+**Example:**
 
-User Request
-     ↓
-Agent
-     ↓
-Tool Call
-     ↓
-Tool Execution
-     ↓
-Tool Result
-     ↓
-Agent
-     ↓
-Final Response
+```
+User:  "What's the latest message from Rahul?"
+  → Agent understands request
+  → read_whatsapp_tool
+  → Tool returns message
+  → Agent summarizes result
+  → JARVIS speaks response
+```
 
-For example:
+### 💬 Voice-Oriented System Prompt
 
-User:
-"What's the latest message from Rahul?"
+The system prompt is intentionally optimized for speech. JARVIS is instructed to:
 
-        ↓
+- Respond in one short sentence
+- Avoid markdown and long explanations
+- Keep responses natural for speech
+- Summarize tool results (never expose raw JSON/tool output)
+- Follow confirmation rules
+- Separate reading and sending WhatsApp actions
+- Explain errors in plain English
 
-Agent understands request
+> A response designed for a text interface does not necessarily work well as spoken output. That's why the prompt is deliberately voice-first.
 
-        ↓
+---
 
-read_whatsapp_tool
+## 🔐 Confirmation Architecture
 
-        ↓
+| Action Type | Confirmation Required? |
+|---|:---:|
+| Send WhatsApp | ✅ Yes |
+| Send Email | ✅ Yes |
+| Read messages | ❌ No |
+| Todo actions | ❌ No |
+| Memory | ❌ No |
+| Music | ❌ No |
 
-Tool returns message
-
-        ↓
-
-Agent summarizes result
-
-        ↓
-
-JARVIS speaks response
-💬 Voice-Oriented System Prompt
-
-The system prompt is intentionally optimized for speech.
-
-JARVIS is instructed to:
-
-Respond in one short sentence
-Avoid markdown
-Avoid long explanations
-Keep responses natural for speech
-Summarize tool results
-Never expose raw JSON or tool output
-Follow confirmation rules
-Separate reading and sending WhatsApp actions
-Explain errors in plain English
-
-This is important because the response is eventually sent to:
-
-speak(reply)
-
-A response designed for a text interface does not necessarily work well as spoken output.
-
-🔐 Confirmation Architecture
-
-The assistant distinguishes between actions that require confirmation and actions that can be performed immediately.
-
-Current prompt-level rules include:
-
-Send WhatsApp → Confirmation required
-Send Email    → Confirmation required
-
-Read messages → No confirmation
-Todo actions  → No confirmation
-Memory        → No confirmation
-Music         → No confirmation
-
-Conceptually:
-
+```
                     User Request
                          │
                          ▼
                        Agent
                          │
               ┌──────────┴──────────┐
-              │                     │
+              ▼                     ▼
        Sensitive action       Non-sensitive action
               │                     │
               ▼                     ▼
-         Ask confirmation       Execute tool
+        Ask confirmation        Execute tool
               │                     │
               ▼                     │
-         User confirms              │
+        User confirms                │
               │                     │
               └──────────┬──────────┘
                          ▼
                     Execute Tool
-🧠 Persistent State
+```
 
-JARVIS initializes its state once when the voice loop begins:
+---
 
+## 🧠 Persistent State
+
+JARVIS initializes state once when the voice loop begins:
+
+```python
 state: AgentState = {
     "messages": [],
     "music": None,
@@ -510,349 +431,345 @@ state: AgentState = {
     "pending_confirmation": None,
     "turn_count": 0,
 }
+```
 
-The state persists throughout the continuous voice session.
+State persists throughout the session and is updated after every graph invocation:
 
-After each graph invocation:
-
+```python
 state.update(result)
+```
 
-This allows information returned by LangGraph to remain available for subsequent turns.
+### 🔊 Response Generation
 
-🔊 Response Generation
-
-Once LangGraph finishes processing the request, main.py extracts the latest AIMessage.
-
-The helper function:
-
+```python
 _extract_reply(result)
+```
 
-searches the returned message list in reverse order and returns the latest non-empty AI response.
+Searches the returned message list **in reverse** and returns the latest non-empty AI response.
 
-The response is then sent to:
+```
+AIMessage → _extract_reply() → Text Response → speak() → Audio Output
+```
 
-speak(reply)
+---
 
-Therefore the final pipeline is:
+## ♾️ Continuous Voice Loop
 
-AIMessage
-   ↓
-_extract_reply()
-   ↓
-Text Response
-   ↓
-speak()
-   ↓
-Audio Output
-♾️ Continuous Voice Loop
+JARVIS remains active until explicitly terminated:
 
-JARVIS is designed to remain active until the user terminates the application.
-
-The core loop is:
-
+```python
 while True:
     user_text = listen_and_transcribe()
-
     ...
-
     result = app.invoke(state)
-
     ...
-
     speak(reply)
+```
 
-This creates a conversational experience instead of a one-command-per-process architecture.
+This produces a genuine conversational experience rather than a one-command-per-process model.
 
-🛑 Graceful Shutdown
+### 🛑 Graceful Shutdown
 
-Pressing:
+```
+Ctrl + C → "Goodbye!" → Text-to-Speech → Stop music → Exit
+```
 
-Ctrl + C
+---
 
-raises KeyboardInterrupt.
+## ⚠️ Error Handling
 
-JARVIS handles this explicitly.
+Unexpected runtime errors are caught within the voice loop. Instead of crashing, JARVIS responds:
 
-The shutdown sequence is:
+> *"Something went wrong. Please try again."*
 
-Ctrl + C
-   ↓
-"Goodbye!"
-   ↓
-Text-to-Speech
-   ↓
-Stop music
-   ↓
-Exit
-⚠️ Error Handling
+The application then continues listening. This matters for a voice assistant, since a single failed API call or tool error shouldn't end the entire session.
 
-Unexpected runtime errors are caught by the voice loop.
+---
 
-Instead of terminating immediately, JARVIS gives the user a simple spoken response:
+## 📁 Project Structure
 
-Something went wrong. Please try again.
-
-The application then continues listening.
-
-This is particularly important for a voice assistant because a single failed API request or tool operation should not necessarily terminate the entire session.
-
-📁 Project Structure
-
-Based on the current files, the project can be organized approximately as:
-
+```
 JARVIS/
 │
-├── main.py
-│
-├── graph.py
-│
-├── state.py
-│
-├── tools.py
+├── main.py                    # Main voice loop & entry point
+├── graph.py                   # LangGraph workflow & Mistral agent config
+├── state.py                   # AgentState definition
+├── tools.py                   # Tools exposed to the agent
 │
 ├── voice/
-│   ├── stt.py
-│   └── tts.py
+│   ├── stt.py                 # Speech-to-Text
+│   └── tts.py                 # Text-to-Speech
 │
-├── voice_music_app_fixed.py
-│
-├── requirements.txt
-│
-├── .env
-│
+├── voice_music_app_fixed.py   # Music control (incl. stop functionality)
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables (not committed)
 ├── .gitignore
-│
 └── README.md
+```
 
-Additional modules may be present depending on the implementation of ALL_TOOLS.
+> Additional modules may be present depending on the implementation of `ALL_TOOLS`.
 
-📌 File Responsibilities
-File / Module	Responsibility
-main.py	Main voice loop and application entry point
-graph.py	LangGraph workflow and Mistral agent configuration
-state.py	Definition of AgentState
-tools.py	Available tools exposed to the agent
-voice/stt.py	Speech-to-Text functionality
-voice/tts.py	Text-to-Speech functionality
-voice_music_app_fixed.py	Music control, including stop functionality
-.env	Environment variables and API credentials
-requirements.txt	Python dependencies
-README.md	Project documentation
-🔑 Environment Configuration
+## 📌 File Responsibilities
 
-JARVIS currently requires a Mistral API key.
+| File / Module | Responsibility |
+|---|---|
+| `main.py` | Main voice loop and application entry point |
+| `graph.py` | LangGraph workflow and Mistral agent configuration |
+| `state.py` | Definition of `AgentState` |
+| `tools.py` | Available tools exposed to the agent |
+| `voice/stt.py` | Speech-to-Text functionality |
+| `voice/tts.py` | Text-to-Speech functionality |
+| `voice_music_app_fixed.py` | Music control, including stop functionality |
+| `.env` | Environment variables and API credentials |
+| `requirements.txt` | Python dependencies |
+| `README.md` | Project documentation |
 
-Create a .env file in the project root:
+---
 
+## 🔑 Environment Configuration
+
+JARVIS currently requires a Mistral API key. Create a `.env` file in the project root:
+
+```env
 MISTRAL_API_KEY=your_mistral_api_key
+```
 
-The key is loaded using:
+Loaded via:
 
+```python
 load_dotenv()
-
-and accessed through:
-
 os.getenv("MISTRAL_API_KEY")
+```
 
 Any additional credentials required by individual tools should also be configured through environment variables.
 
-Never commit API keys to GitHub.
+> ⚠️ **Never commit API keys to GitHub.**
 
-A recommended .gitignore is:
+**Recommended `.gitignore`:**
 
+```gitignore
 .env
 __pycache__/
 *.pyc
 .venv/
 Jarvis/
-⚙️ Installation
-1. Clone the repository
+```
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone the repository
+
+```bash
 git clone <YOUR_REPOSITORY_URL>
 cd JARVIS
-2. Create the virtual environment
+```
 
-On Windows:
+### 2. Create the virtual environment
 
+**Windows:**
+
+```bash
 python -m venv Jarvis
-
-Activate it:
-
 Jarvis\Scripts\activate
-3. Install dependencies
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
-4. Configure environment variables
+```
 
-Create:
+### 4. Configure environment variables
 
-.env
+Create a `.env` file:
 
-and add:
-
+```env
 MISTRAL_API_KEY=your_mistral_api_key
+```
 
 Add any other credentials required by the tools.
 
-▶️ Running JARVIS
+---
 
-The project is specifically designed to run using the Python interpreter inside the JARVIS virtual environment.
+## ▶️ Running JARVIS
 
-On Windows:
+JARVIS is designed to run using the Python interpreter **inside** the JARVIS virtual environment.
 
+**Windows:**
+
+```bash
 Jarvis\Scripts\python.exe main.py
+```
 
-This is preferred over:
+> This is preferred over plain `python main.py`, since the project may depend on packages installed specifically inside the JARVIS virtual environment.
 
-python main.py
+---
 
-because the project may depend on packages installed specifically inside the JARVIS virtual environment.
+## 🎤 Example Interactions
 
-🎤 Example Interaction
-Example 1 — General Request
-User:
-What can you do?
+<table>
+<tr><td width="50%" valign="top">
 
-JARVIS:
-I can help you manage tasks, messages, music, and other supported actions.
-Example 2 — WhatsApp
-User:
-Send Rahul a WhatsApp message saying I'll call him later.
+**Example 1: General Request**
 
-JARVIS:
-Send it?
+```
+User:   What can you do?
+JARVIS: I can help you manage tasks,
+        messages, music, and other
+        supported actions.
+```
 
-User:
-Yes.
+</td><td width="50%" valign="top">
 
-JARVIS:
-Message sent.
-Example 3 — Reading Messages
-User:
-What did Rahul say?
+**Example 2: WhatsApp**
 
-JARVIS:
-Rahul said he'll call you later.
+```
+User:   Send Rahul a WhatsApp message
+        saying I'll call him later.
+JARVIS: Send it?
+User:   Yes.
+JARVIS: Message sent.
+```
 
-Reading and sending are intentionally treated as separate actions.
+</td></tr>
+<tr><td width="50%" valign="top">
 
-Example 4 — Music
-User:
-Stop music.
+**Example 3: Reading Messages**
 
-The command is recognized by the fast path.
+```
+User:   What did Rahul say?
+JARVIS: Rahul said he'll call you later.
+```
 
-stop_music()
+*Reading and sending are intentionally treated as separate actions.*
 
-is executed without requiring an LLM request.
+</td><td width="50%" valign="top">
 
-JARVIS then responds:
+**Example 4: Music (Fast Path)**
 
-Music stopped.
-🌐 Planned Frontend
+```
+User:   Stop music.
+```
 
-The backend is currently designed as a Python voice application.
+Recognized by the fast path → `stop_music()` executes without an LLM request.
 
-A web-based frontend can be added without replacing the underlying agent architecture.
+```
+JARVIS: Music stopped.
+```
 
-The future architecture can look like:
+</td></tr>
+</table>
 
-                 ┌──────────────────────┐
-                 │    JARVIS FRONTEND   │
-                 │                      │
-                 │  • Mic Button        │
-                 │  • Waveform          │
-                 │  • Status             │
-                 │  • Response UI        │
-                 └──────────┬───────────┘
-                            │
-                       API / WebSocket
-                            │
-                            ▼
-                 ┌──────────────────────┐
-                 │    JARVIS BACKEND    │
-                 │                      │
-                 │       main.py        │
-                 │          │           │
-                 │          ▼           │
-                 │      graph.py        │
-                 │          │           │
-                 │          ▼           │
-                 │     Mistral AI       │
-                 │          │           │
-                 │          ▼           │
-                 │       Tools          │
-                 └──────────────────────┘
+---
 
-The frontend could visualize the assistant's state:
+## 🌐 Planned Frontend
 
-IDLE
-  ↓
-LISTENING
-  ↓
-PROCESSING
-  ↓
-EXECUTING
-  ↓
-RESPONDING
-  ↓
-IDLE
+The backend is currently a Python voice application. A web-based frontend can be layered on top **without replacing** the underlying agent architecture.
 
-A real-time waveform can also be connected to the microphone's audio stream, making the interface visually reflect the user's voice.
+```
+                 ┌───────────────────────┐
+                 │    JARVIS FRONTEND     │
+                 │  • Mic Button           │
+                 │  • Waveform              │
+                 │  • Status                 │
+                 │  • Response UI             │
+                 └───────────┬─────────────┘
+                              │
+                        API / WebSocket
+                              │
+                              ▼
+                 ┌───────────────────────┐
+                 │    JARVIS BACKEND      │
+                 │       main.py            │
+                 │          │                │
+                 │          ▼                │
+                 │      graph.py              │
+                 │          │                │
+                 │          ▼                │
+                 │     Mistral AI              │
+                 │          │                │
+                 │          ▼                │
+                 │       Tools                │
+                 └───────────────────────┘
+```
 
-🔮 Future Roadmap
+**Planned state visualization:**
 
-Potential improvements include:
+```
+IDLE → LISTENING → PROCESSING → EXECUTING → RESPONDING → IDLE
+```
 
-Voice Experience
-Real-time microphone waveform
-Voice activity detection
-Interruptible responses
-Wake-word detection
-Lower-latency streaming
-Better handling of silence and background noise
-Agent Intelligence
-More sophisticated task planning
-Long-term memory
-Context-aware actions
-Better confirmation handling
-Multi-step task execution
-Multiple specialized agents if required
-Integrations
-WhatsApp
-Email
-Music
-Calendar
-Reminders
-Notes
-Weather
-Smart-home devices
-Browser automation
-Desktop automation
-Frontend
-Web-based JARVIS dashboard
-Real-time WebSocket communication
-Animated voice waveform
-Live execution status
-Conversation history
-Tool execution visualization
-🧩 Multi-Agent Architecture — Future Direction
+A real-time waveform connected to the microphone's audio stream would make the interface visually reflect the user's voice.
 
-The project name and vision describe JARVIS as a multi-agent personal assistant, but the currently provided graph.py implements a single LLM agent with multiple tools.
+---
 
-The distinction is important.
+## 🔮 Future Roadmap
 
-Current Architecture
+<table>
+<tr><td valign="top" width="25%">
+
+### 🎙️ Voice Experience
+- Real-time mic waveform
+- Voice activity detection
+- Interruptible responses
+- Wake-word detection
+- Lower-latency streaming
+- Better silence/noise handling
+
+</td><td valign="top" width="25%">
+
+### 🧠 Agent Intelligence
+- Sophisticated task planning
+- Long-term memory
+- Context-aware actions
+- Better confirmation handling
+- Multi-step task execution
+- Multiple specialized agents
+
+</td><td valign="top" width="25%">
+
+### 🔌 Integrations
+- WhatsApp · Email
+- Music · Calendar
+- Reminders · Notes
+- Weather
+- Smart-home devices
+- Browser / Desktop automation
+
+</td><td valign="top" width="25%">
+
+### 🖥️ Frontend
+- Web-based dashboard
+- Real-time WebSocket comms
+- Animated voice waveform
+- Live execution status
+- Conversation history
+- Tool execution visualization
+
+</td></tr>
+</table>
+
+---
+
+## 🧩 Multi-Agent Architecture: Future Direction
+
+The project name and vision describe JARVIS as a *multi-agent* personal assistant, but the current `graph.py` implements a **single LLM agent with multiple tools**. This distinction matters.
+
+### Current Architecture: Tool-Using Agent
+
+```
              JARVIS Agent
                   │
         ┌─────────┼─────────┐
         ▼         ▼         ▼
       Tool 1    Tool 2    Tool 3
+```
 
-This is a tool-using agent architecture.
+### Possible Future: True Multi-Agent Architecture
 
-Possible Future Multi-Agent Architecture
-
-A true multi-agent implementation could look like:
-
+```
                     JARVIS
                       │
                 Supervisor Agent
@@ -860,126 +777,102 @@ A true multi-agent implementation could look like:
        ┌──────────────┼──────────────┐
        ▼              ▼              ▼
  Communication     Productivity    Entertainment
-    Agent             Agent            Agent
-       │              │              │
-   WhatsApp         Todo            Music
-   Email            Memory          Media
+    Agent             Agent           Agent
+       │                │               │
+   WhatsApp           Todo            Music
+   Email              Memory          Media
+```
 
-The supervisor could decide which specialized agent should handle a particular request.
+A supervisor would route requests to the correct specialized agent:
 
-For example:
-
+```
 "Send Rahul an email."
+   → Supervisor Agent
+   → Communication Agent
+   → Email Tool
+   → Result
+   → JARVIS Voice Response
+```
 
-        ↓
+This would make the system technically qualify as a genuine multi-agent architecture.
 
-Supervisor Agent
+---
 
-        ↓
+## 🏛️ Design Principles
 
-Communication Agent
+| Principle | Description |
+|---|---|
+| **Voice First** | Voice is the primary interaction mechanism, not an add-on feature. |
+| **Action Oriented** | JARVIS executes actions through tools rather than merely answering questions. |
+| **Modular** | Voice, agent, state, and tool layers are separated so components evolve independently. |
+| **Safe by Design** | Potentially irreversible operations require explicit confirmation. |
+| **Efficient** | Deterministic operations bypass the LLM when reasoning isn't necessary. |
+| **Extensible** | New tools can be added to `ALL_TOOLS` without changing the voice loop. |
 
-        ↓
+---
 
-Email Tool
+## 🔒 Security Considerations
 
-        ↓
+Because JARVIS interacts with external services, API credentials and tool permissions must be handled carefully.
 
-Result
+**Never expose:**
+- `MISTRAL_API_KEY`
+- WhatsApp credentials
+- Email credentials
+- OAuth tokens
+- API tokens
 
-        ↓
+**Never commit:** `.env`, credentials, tokens, or private keys to a public repository.
 
-JARVIS Voice Response
+For tools capable of sending messages, emails, or performing irreversible actions, confirmation and permission boundaries must be maintained at all times.
 
-This would make the system technically qualify as a multi-agent architecture.
+---
 
-🏛️ Design Principles
-Voice First
+## 🧪 Development Philosophy
 
-Voice is the primary interaction mechanism rather than an additional feature.
-
-Action Oriented
-
-JARVIS is designed to execute actions through tools rather than merely answer questions.
-
-Modular
-
-The voice, agent, state, and tool layers are separated so that individual components can evolve independently.
-
-Safe by Design
-
-Potentially irreversible operations can require explicit confirmation.
-
-Efficient
-
-Deterministic operations can bypass the LLM when reasoning is unnecessary.
-
-Extensible
-
-New tools can be added to ALL_TOOLS without fundamentally changing the voice loop.
-
-🔒 Security Considerations
-
-Because JARVIS can potentially interact with external services, API credentials and tool permissions should be treated carefully.
-
-Never expose:
-MISTRAL_API_KEY
-WhatsApp credentials
-Email credentials
-OAuth tokens
-API tokens
-Never commit:
-.env
-credentials
-tokens
-private keys
-
-to a public repository.
-
-For tools capable of sending messages, emails, or performing irreversible actions, confirmation and permission boundaries should be maintained.
-
-🧪 Development Philosophy
-
-The system follows a layered architecture:
-
+```
 ┌─────────────────────┐
-│      Voice I/O      │
+│      Voice I/O       │
 └──────────┬──────────┘
-           │
-           ▼
+            ▼
 ┌─────────────────────┐
-│   Application Loop  │
-│       main.py       │
+│   Application Loop    │
+│       main.py          │
 └──────────┬──────────┘
-           │
-           ▼
+            ▼
 ┌─────────────────────┐
-│    Agent Workflow   │
-│      graph.py       │
+│    Agent Workflow      │
+│      graph.py           │
 └──────────┬──────────┘
-           │
-           ▼
+            ▼
 ┌─────────────────────┐
-│        Tools        │
+│        Tools            │
 └─────────────────────┘
+```
 
-This separation allows future components such as a web frontend, additional agents, new tools, or alternative voice models to be introduced without rewriting the entire application.
+This layered separation allows future components, such as a web frontend, additional agents, new tools, or alternative voice models, to be introduced without rewriting the entire application.
 
-📊 Current Technology Stack
-Technology	Purpose
-Python	Core application
-LangGraph	Agent workflow orchestration
-LangChain	LLM/tool integration
-Mistral AI	Language model
-Speech-to-Text	Voice input
-Rime TTS	Voice output
-Python-dotenv	Environment configuration
-🧠 Technical Summary
+---
+
+## 📊 Current Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| **Python** | Core application |
+| **LangGraph** | Agent workflow orchestration |
+| **LangChain** | LLM / tool integration |
+| **Mistral AI** | Language model (`mistral-small-latest`) |
+| **Speech-to-Text** | Voice input |
+| **Rime TTS** | Voice output |
+| **python-dotenv** | Environment configuration |
+
+---
+
+## 🧠 Technical Summary
 
 At its current stage, JARVIS is a continuous voice application built around a tool-calling LangGraph agent.
 
-The critical execution pipeline is:
-
+```
 Speech
   ↓
 Speech-to-Text
@@ -1012,26 +905,31 @@ Fast-path check
               speak()
                  ↓
                Speech
+```
 
 This architecture provides the foundation for evolving JARVIS into a larger personal-agent platform with specialized agents, richer memory, additional tools, and a real-time visual interface.
 
-🚀 Vision
+---
 
-JARVIS is ultimately intended to make interaction with computers feel less like operating software and more like communicating with an intelligent assistant.
+## 🚀 Vision
 
-The long-term goal is simple:
+JARVIS is ultimately intended to make interaction with computers feel less like *operating software* and more like *communicating with an intelligent assistant*.
 
-Don't make the user learn how to operate the computer. Let the user simply tell the computer what they want done.
+> **Don't make the user learn how to operate the computer.**
+> **Let the user simply tell the computer what they want done.**
 
-No typing.
-No unnecessary navigation.
-No repetitive clicking.
+No typing. No unnecessary navigation. No repetitive clicking.
 
-Just speak.
-JARVIS understands.
-JARVIS acts.
-👨‍💻 Project
+**Just speak. JARVIS understands. JARVIS acts.**
 
-JARVIS — Voice-First Personal Assistant
+---
+
+<div align="center">
+
+### 👨‍💻 Project
+
+**JARVIS: Voice-First Personal Assistant**
 
 Built with Python, LangGraph, LangChain, Mistral AI, Speech-to-Text, Text-to-Speech, and tool-based AI execution.
+
+</div>
