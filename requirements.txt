@@ -1,3 +1,10 @@
+mistralai
+python-dotenv
+google-auth
+google-auth-oauthlib
+google-api-python-client
+qdrant-client
+sentence-transformers
 pyautogui
 pyperclip
 pytesseract
@@ -5,3 +12,6 @@ pillow
 opencv-python
 websockets
 pyaudio
+playwright
+SpeechRecognition
+pyttsx3

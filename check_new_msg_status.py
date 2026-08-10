@@ -1,3 +1,6 @@
+# Check is ther any new message present or come on whatsapp
+
+
 import pyautogui
 import time
 import requests
@@ -9,6 +12,8 @@ from dotenv import load_dotenv
 # ==============================
 # LOAD ENV
 # ==============================
+
+
 
 load_dotenv()
 

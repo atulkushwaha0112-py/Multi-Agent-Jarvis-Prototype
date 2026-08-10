@@ -15,7 +15,10 @@ if not RIME_API_KEY:
     raise ValueError("❌ RIME_API_KEY not set in environment variables")
 
 SAMPLE_RATE = 22050
-PREBUFFER_CHUNKS = 3  # wait for a few chunks before playback starts — smooths jitter
+BYTES_PER_SAMPLE = 2  # 16-bit PCM
+BYTES_PER_MS = (SAMPLE_RATE * BYTES_PER_SAMPLE) // 1000
+
+PREBUFFER_MS = 300  # tune this: higher = smoother but more startup latency
 
 
 def audio_player_thread(audio_queue: queue.Queue, stop_event: threading.Event):
@@ -53,7 +56,11 @@ async def speak(text: str, speaker: str = "astra", model_id: str = "coda"):
     player.start()
 
     prebuffer = []
+    prebuffered_bytes = 0
     started = False
+    leftover = b""  # carries over an odd trailing byte between chunks
+
+    prebuffer_target_bytes = PREBUFFER_MS * BYTES_PER_MS
 
     try:
         async with websockets.connect(url, additional_headers=headers) as ws:
@@ -64,11 +71,22 @@ async def speak(text: str, speaker: str = "astra", model_id: str = "coda"):
                 event = json.loads(message)
 
                 if event["type"] == "chunk":
-                    audio_bytes = base64.b64decode(event["data"])
+                    audio_bytes = leftover + base64.b64decode(event["data"])
+
+                    # Keep chunks sample-aligned (even byte count for 16-bit PCM)
+                    if len(audio_bytes) % 2 != 0:
+                        leftover = audio_bytes[-1:]
+                        audio_bytes = audio_bytes[:-1]
+                    else:
+                        leftover = b""
+
+                    if not audio_bytes:
+                        continue
 
                     if not started:
                         prebuffer.append(audio_bytes)
-                        if len(prebuffer) >= PREBUFFER_CHUNKS:
+                        prebuffered_bytes += len(audio_bytes)
+                        if prebuffered_bytes >= prebuffer_target_bytes:
                             for c in prebuffer:
                                 audio_queue.put(c)
                             prebuffer.clear()
@@ -80,6 +98,7 @@ async def speak(text: str, speaker: str = "astra", model_id: str = "coda"):
                     # flush any leftover prebuffered audio (short utterances)
                     for c in prebuffer:
                         audio_queue.put(c)
+                    prebuffer.clear()
                     break
 
                 elif event["type"] == "error":

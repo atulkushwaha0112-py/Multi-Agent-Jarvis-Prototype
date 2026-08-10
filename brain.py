@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 
+
 from read_emails import get_recent_emails
 from memory import search_memory, save_memory, search_emails
 from gmail_auth import get_gmail_service

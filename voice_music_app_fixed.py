@@ -2,7 +2,9 @@ import subprocess
 import sys
 import argparse
 
-MPV_PATH = r"C:\Users\Shivam Pandey\Downloads\mpv-x86_64-20260810-git-513d3407d4\mpv.exe"
+
+
+MPV_PATH = r"C:\Users\ATUL\Downloads\mpv-x86_64-20260810-git-513d3407d4\mpv.exe"
 player = None
 
 
