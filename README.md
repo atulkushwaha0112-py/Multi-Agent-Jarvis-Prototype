@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 JARVIS
+#  JARVIS
 ### Voice-First Multi-Agent Personal Assistant
 
 *Speak your intent. JARVIS understands. JARVIS acts.*
@@ -17,7 +17,7 @@
 
 ---
 
-## 📖 Table of Contents
+##  Table of Contents
 
 - [About JARVIS](#-about-jarvis)
 - [What Makes JARVIS Different?](#-what-makes-jarvis-different)
@@ -46,7 +46,7 @@
 
 ---
 
-## 💡 About JARVIS
+##  About JARVIS
 
 **JARVIS** is an AI-powered, voice-first personal assistant designed to make human-computer interaction more natural and action-oriented.
 
@@ -98,7 +98,7 @@ The system:
 
 ---
 
-## 🚀 What Makes JARVIS Different?
+##  What Makes JARVIS Different?
 
 | Traditional Software | JARVIS |
 |---|---|
@@ -106,7 +106,7 @@ The system:
 
 For example, instead of manually opening a messaging app and composing a message, the user simply says:
 
-> 🗣️ *"Send Rahul a message saying I'll reach in ten minutes."*
+>  *"Send Rahul a message saying I'll reach in ten minutes."*
 
 JARVIS understands the request, determines a messaging action is required, asks for confirmation when necessary, and executes the corresponding tool.
 
@@ -114,9 +114,9 @@ This same architecture extends naturally to email, music, productivity, memory, 
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
-### 🎙️ Voice-First Interaction
+###  Voice-First Interaction
 
 JARVIS is built around continuous voice interaction, with no typing required.
 
