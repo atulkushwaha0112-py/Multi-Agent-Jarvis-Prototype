@@ -1,5 +1,8 @@
 # Secrets — never commit these
 .env
+.env.*
+!.env.example
+*.pem
 credentials.json
 token.json
 
@@ -28,3 +31,4 @@ env/
 *.swo
 .DS_Store
 Thumbs.db
+client_secret*.json
